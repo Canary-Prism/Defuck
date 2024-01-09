@@ -74,7 +74,7 @@ public class FlowInterpreter extends CollapsingInterpreter {
                     i++;
                 if (optimised_code.get(i).instruction() == jump
                     && optimised_code.get(i).b() == 0) {
-                    var end = optimised_code.get(i + 1).a();
+                    var end = optimised_code.get(i).a();
                     for (int v = i; v <= end; v++) {
                         optimised_code.set(v, new OptimisedCollapsedInstruction(none, 0, 0));
                     }
