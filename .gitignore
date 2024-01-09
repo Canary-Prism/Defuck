@@ -1,0 +1,8 @@
+# ignore vscode files
+.vscode
+
+# ignore maven generated files
+target
+
+# ignore macOS file system files
+.DS_Store
