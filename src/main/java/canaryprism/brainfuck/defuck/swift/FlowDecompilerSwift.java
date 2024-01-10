@@ -1,7 +1,5 @@
 package canaryprism.brainfuck.defuck.swift;
 
-import static canaryprism.brainfuck.optimising.FlowInterpreter.OptimisedCollapsedInstruction.OptimisedInstruction.*;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
