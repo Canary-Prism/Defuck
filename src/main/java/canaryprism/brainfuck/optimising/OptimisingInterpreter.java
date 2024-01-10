@@ -1,4 +1,4 @@
-package canaryprism.brainfuck.defuck;
+package canaryprism.brainfuck.optimising;
 
 import canaryprism.brainfuck.Instruction;
 import canaryprism.brainfuck.Interpreter;
@@ -38,5 +38,5 @@ public abstract class OptimisingInterpreter extends Interpreter {
 
     protected abstract void optimise();
 
-    public abstract String getOptimisedCode();
+    public abstract String getOptimisedCodeString();
 }

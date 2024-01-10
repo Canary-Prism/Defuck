@@ -1,15 +1,16 @@
-package canaryprism.brainfuck.defuck;
+package canaryprism.brainfuck.optimising;
+
+import static canaryprism.brainfuck.optimising.FlowInterpreter.OptimisedCollapsedInstruction.OptimisedInstruction.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import static canaryprism.brainfuck.defuck.FlowInterpreter.OptimisedCollapsedInstruction.OptimisedInstruction.*;
 
 public class FlowInterpreter extends CollapsingInterpreter {
 
-    public ArrayList<OptimisedCollapsedInstruction> optimised_code;
+    private ArrayList<OptimisedCollapsedInstruction> optimised_code;
 
     public FlowInterpreter(String code) {
         super(code);
@@ -66,7 +67,7 @@ public class FlowInterpreter extends CollapsingInterpreter {
             }
         }
         //if a set 0 happens before a positive jump, nuke the entire loop
-        for (int i = 0; i < optimised_code.size() - 1; i++) {
+        for (int i = 0; i < optimised_code.size() - 2; i++) {
             if (optimised_code.get(i).instruction() == set
                 && optimised_code.get(i).a() == 0) {
                 i++;
@@ -86,23 +87,20 @@ public class FlowInterpreter extends CollapsingInterpreter {
         compressNone();
     }
 
-    private boolean simplify(int from, int to) {
-
-        //whether any simplifications were made
-        var success = false;
+    private void simplify(int from, int to) {
 
         //if there are loops within this loop they need to be simplified first
         for (int i = from; i < to; i++) {
             var here = optimised_code.get(i);
             if (here.instruction() == jump && here.a() != 0) {
-                success = simplify(i + 1, i + here.a()) || success;
+                simplify(i + 1, i + here.a());
             }
         }
 
         //if there are still loops or IO side-effects then this loop cannot be simplified
         for (int i = from; i < to; i++) 
             switch (optimised_code.get(i).instruction()) {
-                case jump, in, out, set, findzero, transfer -> { return success; }
+                case jump, in, out, set, findzero, transfer -> { return; }
                 default -> {}
             }
 
@@ -161,10 +159,10 @@ public class FlowInterpreter extends CollapsingInterpreter {
 
                     optimised_code.set(v, new OptimisedCollapsedInstruction(set, 0, 0));
 
-                    return true;
+                    return;
                 }
             }
-            return success;
+            return;
         }
 
         //nuke everything >:D
@@ -178,7 +176,6 @@ public class FlowInterpreter extends CollapsingInterpreter {
         if (!has_pluses && has_moves) {
             optimised_code.set(from - 1, new OptimisedCollapsedInstruction(findzero, move_total, 0));
         }
-        return true;
     }
 
     /**
@@ -245,7 +242,7 @@ public class FlowInterpreter extends CollapsingInterpreter {
                         pointer += here.a;
                     }
                 }
-                case none -> System.err.println("wasted instruction cycle");
+                case none -> System.err.println("WARNING! Wasted instruction cycle in FlowInterpreter!");
                 case set -> memory[pointer] = here.a;
                 case transfer -> memory[pointer + here.a] = (memory[pointer + here.a] + memory[pointer] * here.b) & 255;
             }
@@ -294,13 +291,18 @@ public class FlowInterpreter extends CollapsingInterpreter {
         // }
     }
 
-    public String getOptimisedCode() {
+    public String getOptimisedCodeString() {
         return optimised_code.stream()
                 .map(OptimisedCollapsedInstruction::toString)
                 .reduce("", String::concat);
     }
+
+    @SuppressWarnings("unchecked")
+    public ArrayList<OptimisedCollapsedInstruction> getOptimisedCode() {
+        return (ArrayList<OptimisedCollapsedInstruction>)optimised_code.clone();
+    }
     
-    protected record OptimisedCollapsedInstruction(OptimisedInstruction instruction, int a, int b) {
+    public record OptimisedCollapsedInstruction(OptimisedInstruction instruction, int a, int b) {
         /**
          * omits minus and left
          * adds condensed instructions

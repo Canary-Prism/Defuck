@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import canaryprism.brainfuck.*;
-import canaryprism.brainfuck.defuck.*;
+import canaryprism.brainfuck.optimising.*;
 
 public class CLI {
     public static void main(String[] args) {

@@ -1,11 +1,12 @@
-package canaryprism.brainfuck.defuck;
+package canaryprism.brainfuck.optimising;
 
 import static canaryprism.brainfuck.Instruction.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import canaryprism.brainfuck.defuck.CollapsingInterpreter.CollapsedInstruction.SimplerInstruction;
+
+import canaryprism.brainfuck.optimising.CollapsingInterpreter.CollapsedInstruction.SimplerInstruction;
 
 /**
  * this interpreter does basic collapsing of instructions
@@ -109,7 +110,7 @@ public class CollapsingInterpreter extends OptimisingInterpreter {
         }
     }
 
-    public String getOptimisedCode() {
+    public String getOptimisedCodeString() {
         return collapsed_code.stream()
             .map(CollapsedInstruction::toString)
             .reduce("", String::concat);
