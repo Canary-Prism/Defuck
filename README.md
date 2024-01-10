@@ -1,6 +1,5 @@
 # Defuck
 some collection of Brainfuck interpreters in Java with varying traits  
-(plan to add a decompiler eventually)
 
 ### Interpreter
 - parses the code
@@ -25,3 +24,9 @@ some collection of Brainfuck interpreters in Java with varying traits
 
 ### FlowInterpreter extends CollapsingInterpreter
 - recognises most logical patterns
+
+
+## Additionally, some Decompilers have been made
+one that generates Java sourcecode and one that generates Swift  
+they are both based on FlowInterpreter's optimised code and are both detrimentally slow compared to how optimised FlowInterpreter is  
+if you just run the generated swift sourcecode with `swift <file>` it's an absolute joke
