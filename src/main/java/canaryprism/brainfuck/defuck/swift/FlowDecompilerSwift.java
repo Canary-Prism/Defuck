@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import canaryprism.brainfuck.defuck.Decompiler;
 import canaryprism.brainfuck.optimising.FlowInterpreter;
 import canaryprism.brainfuck.optimising.FlowInterpreter.OptimisedCollapsedInstruction;
-import canaryprism.writers.SourcecodeWriterJava;
 import canaryprism.writers.SourcecodeWriterSwift;
 
 public class FlowDecompilerSwift extends Decompiler {
