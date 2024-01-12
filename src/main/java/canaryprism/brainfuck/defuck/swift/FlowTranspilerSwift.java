@@ -9,11 +9,11 @@ import canaryprism.brainfuck.optimising.FlowInterpreter;
 import canaryprism.brainfuck.optimising.FlowInterpreter.OptimisedCollapsedInstruction;
 import canaryprism.writers.SourcecodeWriterSwift;
 
-public class FlowDecompilerSwift extends Decompiler {
+public class FlowTranspilerSwift extends Decompiler {
 
     private final ArrayList<OptimisedCollapsedInstruction> code;
 
-    public FlowDecompilerSwift(String code) {
+    public FlowTranspilerSwift(String code) {
         this.code = new FlowInterpreter(code).getOptimisedCode();
     }
 

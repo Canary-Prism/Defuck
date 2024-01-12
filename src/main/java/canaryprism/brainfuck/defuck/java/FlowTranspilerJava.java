@@ -10,11 +10,11 @@ import canaryprism.brainfuck.optimising.FlowInterpreter.OptimisedCollapsedInstru
 import canaryprism.writers.SourcecodeWriterJava;
 
 //slow as fuck and very not worth it :3
-public class FlowDecompilerJava extends Decompiler {
+public class FlowTranspilerJava extends Decompiler {
 
     private final ArrayList<OptimisedCollapsedInstruction> code;
 
-    public FlowDecompilerJava(String code) {
+    public FlowTranspilerJava(String code) {
         this.code = new FlowInterpreter(code).getOptimisedCode();
     }
 
