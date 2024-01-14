@@ -66,19 +66,23 @@ public class FlowInterpreter extends CollapsingInterpreter {
                 optimised_code.set(i, new OptimisedCollapsedInstruction(set, (optimised_code.get(i).a() + amount) % 256, 0));
             }
         }
-        //if a set 0 happens before a positive jump, nuke the entire loop
+        //if a set 0 or negative jump or findzero happens before a positive jump or findzero, nuke the entire loop
         for (int i = 0; i < optimised_code.size() - 2; i++) {
-            if (optimised_code.get(i).instruction() == set
-                && optimised_code.get(i).a() == 0) {
+            if ((optimised_code.get(i).instruction() == set && optimised_code.get(i).a() == 0)
+                || (optimised_code.get(i).instruction() == jump && optimised_code.get(i).a() == 0)
+                || (optimised_code.get(i).instruction() == findzero)) {
                 i++;
                 while (optimised_code.get(i).instruction() == none)
                     i++;
-                if (optimised_code.get(i).instruction() == jump
+                if ((optimised_code.get(i).instruction() == jump)
                     && optimised_code.get(i).b() == 0) {
                     var end = optimised_code.get(i).a();
-                    for (int v = i; v <= end; v++) {
+                    System.out.println(end);
+                    for (int v = i; v <= i + end; v++) {
                         optimised_code.set(v, new OptimisedCollapsedInstruction(none, 0, 0));
                     }
+                } else if (optimised_code.get(i).instruction() == findzero) {
+                    optimised_code.set(i, new OptimisedCollapsedInstruction(none, 0, 0));
                 }
             }
         }

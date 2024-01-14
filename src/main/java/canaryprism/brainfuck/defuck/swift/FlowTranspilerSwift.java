@@ -1,33 +1,36 @@
 package canaryprism.brainfuck.defuck.swift;
 
+import static java.lang.StringTemplate.STR;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-import canaryprism.brainfuck.defuck.Decompiler;
+import canaryprism.brainfuck.defuck.Transpiler;
 import canaryprism.brainfuck.optimising.FlowInterpreter;
 import canaryprism.brainfuck.optimising.FlowInterpreter.OptimisedCollapsedInstruction;
 import canaryprism.writers.SourcecodeWriterSwift;
 
 //somehow even slower 
-public class FlowTranspilerSwift extends Decompiler {
+public class FlowTranspilerSwift extends Transpiler {
 
-    private final ArrayList<OptimisedCollapsedInstruction> code;
+    protected ArrayList<OptimisedCollapsedInstruction> flow_code;
 
     public FlowTranspilerSwift(String code) {
-        this.code = new FlowInterpreter(code).getOptimisedCode();
+        super(code);
+
     }
 
     @Override
     @SuppressWarnings("resource")
-    public void decompile(OutputStream out) throws IOException {
+    public void write(OutputStream out) throws IOException {
         try (var wr = new SourcecodeWriterSwift(out, true)) {
             wr
                         .writeImport("Darwin")
                         .code("var memory = [Int](repeating: 0, count: 60_000)")
                         .code("var pointer = 30_000");
 
-            for (var e : code) {
+            for (var e : flow_code) {
                 switch (e.instruction()) {
                     case plus -> wr.code(STR."memory[pointer] = (memory[pointer] + \{e.a()}) & 255;");
                     case jump -> {
@@ -53,4 +56,8 @@ public class FlowTranspilerSwift extends Decompiler {
         } 
     }
     
+    @Override
+    protected void transpile() {
+        this.flow_code = new FlowInterpreter(code).getOptimisedCode();
+    }
 }

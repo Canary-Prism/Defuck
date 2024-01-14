@@ -75,7 +75,7 @@ public class CollapsingInterpreter extends OptimisingInterpreter {
 
                 case out -> collapsed_code.add(new CollapsedInstruction(SimplerInstruction.out, 0, 0));
                 case in -> {
-                    if (collapsed_code.getLast().instruction() == SimplerInstruction.plus)
+                    if (collapsed_code.size() > 0 && collapsed_code.getLast().instruction() == SimplerInstruction.plus)
                         collapsed_code.removeLast();
                     collapsed_code.add(new CollapsedInstruction(SimplerInstruction.in, 0, 0));
                 }

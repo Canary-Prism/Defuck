@@ -9,11 +9,15 @@ import canaryprism.brainfuck.optimising.FlowInterpreter.OptimisedCollapsedInstru
 
 public abstract class Transpiler {
 
-    protected final ArrayList<OptimisedCollapsedInstruction> code;
+    protected final String code;
 
     public Transpiler(String code) {
-        this.code = new FlowInterpreter(code).getOptimisedCode();
+        this.code = code;
+
+        transpile();
     }
 
-    public abstract void decompile(OutputStream out) throws IOException;
+    public abstract void write(OutputStream out) throws IOException;
+
+    protected abstract void transpile();
 }

@@ -60,6 +60,13 @@ public class SourcecodeWriterJava implements AutoCloseable {
         indent++;
         return this;
     }
+    public SourcecodeWriterJava psvm(String... throwing) throws IOException {
+        checkMode(member);
+        writeLine(STR."public static void main(String[] args) throws \{String.join(", ", throwing)} {");
+        mode.push(code);
+        indent++;
+        return this;
+    }
     public SourcecodeWriterJava startMethod(String type, String name, String... args) throws IOException {
         checkMode(member);
         writeLine(type + " " + name + "(" + String.join(", ", args) + ") {");
